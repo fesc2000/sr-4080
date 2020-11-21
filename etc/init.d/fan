@@ -1,0 +1,47 @@
+#!/bin/sh
+# This script is not used when systemd is running
+### BEGIN INIT INFO
+# Provides:          fan
+# Required-Start:
+# Required-Stop:
+# Should-Stop:       
+# X-Stop-After:      umountroot
+# Default-Start:	2 3 5
+# Default-Stop:      0 6
+# Short-Description: PWM/gpio80 fan control
+# Description:       PWM/gpio80 fan control
+### END INIT INFO
+#
+set -eu
+
+. /lib/lsb/init-functions
+
+PIDFILE=/var/run/pwm.pid
+DAEMON=/root/bin/pwm
+ARGS="/sys/class/gpio/gpio80/value 30 10000"
+
+case "${1:-}" in
+
+  start|restart|force-reload)
+    if [ ! -d  /sys/class/gpio/gpio80 ]; then
+	    echo 80 > /sys/class/gpio/export
+	    echo out >  /sys/class/gpio/gpio80/direction
+	    echo 1 >  /sys/class/gpio/gpio80/value
+    fi
+    if [ ! -d  /sys/class/gpio/gpio80 ]; then
+	exit 1
+    fi
+    start-stop-daemon --start --background --make-pidfile --pidfile $PIDFILE --exec $DAEMON $ARGS
+    ;;
+
+  stop)
+    start-stop-daemon --stop --pidfile $PIDFILE
+    ;;
+
+  *)
+    echo "Usage: ${0:-} stop" >&2
+    exit 1;;
+
+esac
+
+exit 0

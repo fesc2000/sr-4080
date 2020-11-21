@@ -1,0 +1,56 @@
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+index 11b36c317511..d98af34cc5c3 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
++++ b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+@@ -222,11 +222,16 @@
+ 		marvell,function = "gpio";
+ 	};
+ 
+-	cp0_wlan_disable_pins: wlan-disable-pins {
++	cp0_wlan0_disable_pins: wlan0-disable-pins {
+ 		marvell,pins = "mpp51";
+ 		marvell,function = "gpio";
+ 	};
+ 
++	cp0_wlan1_disable_pins: wlan1-disable-pins {
++		marvell,pins = "mpp52";
++		marvell,function = "gpio";
++	};
++
+ 	cp0_sdhci_pins: sdhci-pins {
+ 		marvell,pins = "mpp55", "mpp56", "mpp57", "mpp58", "mpp59",
+ 			       "mpp60", "mpp61";
+@@ -236,7 +241,7 @@
+ 
+ &cp0_pcie0 {
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&cp0_pci0_reset_pins &cp0_wlan_disable_pins>;
++	pinctrl-0 = <&cp0_pci0_reset_pins &cp0_wlan0_disable_pins>;
+ 	reset-gpios = <&cp0_gpio2 0 GPIO_ACTIVE_LOW>;
+ 	phys = <&cp0_comphy0 0>;
+ 	phy-names = "cp0-pcie0-x1-phy";
+@@ -342,6 +347,16 @@
+ 	};
+ };
+ 
++&cp1_pcie0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp0_pci1_reset_pins &cp0_wlan1_disable_pins>;
++	reset-gpios = <&cp0_gpio2 1 GPIO_ACTIVE_LOW>;
++	phys = <&cp1_comphy0 0>;
++	phy-names = "cp1-pcie0-x1-phy";
++	status = "okay";
++};
++
++/*
+ &cp1_sata0 {
+ 	pinctrl-0 = <&cp0_pci1_reset_pins>;
+ 	status = "okay";
+@@ -351,6 +366,7 @@
+ 		phy-names = "cp1-sata0-1-phy";
+ 	};
+ };
++*/
+ 
+ &cp1_mdio {
+ 	pinctrl-names = "default";
